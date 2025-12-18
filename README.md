@@ -33,7 +33,7 @@ Or Search for `IR RGB Light Mapper` in HACS and install it under the "Integratio
 <details>
 <summary>More Details</summary>
 
-- You should take the xxxx.zip file from the latest [published release](https://github.com/Infinitte/HA-IR-Light/releases).
+- You should take the ir_light.zip file from the latest [published release](https://github.com/Infinitte/HA-IR-Light/releases).
 - To install, place the contents of `custom_components` into the `<config directory>/custom_components` folder of your Home Assistant installation.
 - Restart Home Assistant
 - In the HA UI go to Settings -> Integrations click "+ Add integration" and search for "IR RGB Light Mapper"
