@@ -5,6 +5,5 @@
   "iot_class": "local_polling",
   "zip_release": false,
   "filename": "ir_light",
-  "domains": ["light"],
   "keywords": ["ir", "infrared", "rgb", "light", "remote"]
 }
