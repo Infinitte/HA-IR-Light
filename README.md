@@ -3,7 +3,6 @@
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
 [![Downloads][download-latest-shield]]()
-[![HACS Installs][hacs-installs-shield]]()
 [![License][license-shield]](LICENSE)
 
 # Home Assistant IR RGB Light Integration
@@ -56,5 +55,10 @@ During setup, you will be asked for:
 MIT License
 
 <!---->
-[releases-shield]: https://img.shields.io/github/release/andrew-codechimp/HA-Battery-Notes.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/Infinitte/HA-IR-Light.svg?style=for-the-badge
 [releases]: https://github.com/Infinitte/HA-IR-Light/releases
+[license-shield]: https://img.shields.io/github/license/Infinitte/HA-IR-Light.svg?style=for-the-badge
+[hacs-installs-shield]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Flauwbier.nl%2Fhacs%2Fbattery_notes&style=for-the-badge
+[commits-shield]: https://img.shields.io/github/commit-activity/y/Infinitte/HA-IR-Light.svg?style=for-the-badge
+[commits]: https://github.com/Infinitte/HA-IR-Light/commits/main
+[download-latest-shield]: https://img.shields.io/github/downloads/Infinitte/HA-IR-Light/latest/total?style=for-the-badge
