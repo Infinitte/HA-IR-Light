@@ -1,11 +1,12 @@
-{"domain": "ir_light",
+{
+  "domain": "ir_light",
   "name": "IR RGB Light Mapper",
-  "version": "0.1.2",
   "codeowners": ["@Infinitte"],
   "config_flow": true,
-  "issue_tracker": "https://github.com/Infinitte/HA-IR-Light/issues",
-  "iot_class": "local_polling",
-  "documentation": "https://github.com/Infinitte/HA-IR-Light",
   "dependencies": [],
-  "requirements": []
+  "documentation": "https://github.com/Infinitte/HA-IR-Light",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/Infinitte/HA-IR-Light/issues",
+  "requirements": [],
+  "version": "0.1.2"
 }
