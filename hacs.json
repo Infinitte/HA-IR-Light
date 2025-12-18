@@ -1,7 +1,6 @@
 {
   "name": "IR RGB Light Mapper",
   "render_readme": true,
-  "category": "integration",
   "homeassistant": "2025.12.0",
   "iot_class": "local_polling",
   "zip_release": false,
