@@ -19,9 +19,27 @@ This integration allows you to control "dumb" RGB LED lights (controlled via Inf
 
 ## 🛠️ Installation
 
-1. Copy the `ir_light` folder to your `custom_components/` directory.
-2. Restart Home Assistant.
-3. Go to **Settings > Devices & Services > Add Integration** and search for "IR Light".
+### HACS Installation
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?category=Integration&repository=HA-IR-Light&owner=Infinitte)
+
+Or Search for `IR RGB Light Mapper` in HACS and install it under the "Integrations" categroy.
+
+- Restart Home Assistant
+- In the HA UI go to Settings -> Integrations click "+ Add integration" and search for "IR RGB Light Mapper"
+- Follow Configuration steps to create your first entity
+
+### Manual Installation
+
+<details>
+<summary>More Details</summary>
+
+- You should take the xxxx.zip file from the latest [published release](https://github.com/Infinitte/HA-IR-Light/releases).
+- To install, place the contents of `custom_components` into the `<config directory>/custom_components` folder of your Home Assistant installation.
+- Restart Home Assistant
+- In the HA UI go to Settings -> Integrations click "+ Add integration" and search for "IR RGB Light Mapper"
+- Follow Configuration steps to create your first entity
+</details>
 
 ## ⚙️ Configuration
 During setup, you will be asked for:
@@ -36,3 +54,6 @@ During setup, you will be asked for:
 
 ## ⚖️ License
 MIT License
+
+<!---->
+[releases]: https://github.com/Infinitte/HA-IR-Light/
