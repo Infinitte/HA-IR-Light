@@ -56,4 +56,5 @@ During setup, you will be asked for:
 MIT License
 
 <!---->
-[releases]: https://github.com/Infinitte/HA-IR-Light/
+[releases-shield]: https://img.shields.io/github/release/andrew-codechimp/HA-Battery-Notes.svg?style=for-the-badge
+[releases]: https://github.com/Infinitte/HA-IR-Light/releases
