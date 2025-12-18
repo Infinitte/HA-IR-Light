@@ -1,0 +1,84 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Basic Configuration",
+        "data": {
+          "name": "Light Name (Required)",
+          "brightness_levels": "Brightness Levels",
+          "ir_button_on": "Power On Button (ON) (Required)",
+          "ir_button_off": "Power Off Button (OFF) (Required)",
+          "ir_button_bright_up": "Brightness Up Button (Required)",
+          "ir_button_bright_down": "Brightness Down Button (Required)"
+        }
+      },
+      "effects": {
+        "title": "Effects",
+        "data": {
+          "ir_button_effect_flash": "Flash Effect Button (Optional)",
+          "ir_button_effect_smooth": "Smooth Effect Button (Optional)"
+        }
+      },
+      "colors": {
+        "title": "IR Color Mapping",
+        "description": "Configure your IR buttons. White, Red, Green, and Blue are required.\n\nGuide: [Color Wheel](https://en.wikipedia.org/wiki/Color_wheel#/media/File:RGB_color_wheel_with_hue_and_hex.svg)",
+        "data": {
+          "color_white": "White (Required)",
+          "color_red": "Red (Required)",
+          "color_green": "Green (Required)",
+          "color_blue": "Blue (Required)",
+          "color_orange": "Orange (Optional)",
+          "color_yellow": "Yellow (Optional)",
+          "color_chartreuse": "Chartreuse (Optional)",
+          "color_spring": "Spring Green (Optional)",
+          "color_cyan": "Cyan (Optional)",
+          "color_azure": "Azure (Optional)",
+          "color_violet": "Violet (Optional)",
+          "color_magenta": "Magenta (Optional)",
+          "color_rose": "Rose (Optional)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Basic Configuration",
+        "data": {
+          "name": "Light Name (Required)",
+          "brightness_levels": "Brightness Levels",
+          "ir_button_on": "Power On Button (ON) (Required)",
+          "ir_button_off": "Power Off Button (OFF) (Required)",
+          "ir_button_bright_up": "Brightness Up Button (Required)",
+          "ir_button_bright_down": "Brightness Down Button (Required)"
+        }
+      },
+      "effects": {
+        "title": "Effects",
+        "data": {
+          "ir_button_effect_flash": "Flash Effect Button (Optional)",
+          "ir_button_effect_smooth": "Smooth Effect Button (Optional)"
+        }
+      },
+      "colors": {
+        "title": "IR Color Mapping",
+        "description": "Configure your IR buttons. White, Red, Green, and Blue are required.\n\nGuide: [Color Wheel](https://en.wikipedia.org/wiki/Color_wheel#/media/File:RGB_color_wheel_with_hue_and_hex.svg)",
+        "data": {
+          "color_white": "White (Required)",
+          "color_red": "Red (Required)",
+          "color_green": "Green (Required)",
+          "color_blue": "Blue (Required)",
+          "color_orange": "Orange (Optional)",
+          "color_yellow": "Yellow (Optional)",
+          "color_chartreuse": "Chartreuse (Optional)",
+          "color_spring": "Spring Green (Optional)",
+          "color_cyan": "Cyan (Optional)",
+          "color_azure": "Azure (Optional)",
+          "color_violet": "Violet (Optional)",
+          "color_magenta": "Magenta (Optional)",
+          "color_rose": "Rose (Optional)"
+        }
+      }
+    }
+  }
+}

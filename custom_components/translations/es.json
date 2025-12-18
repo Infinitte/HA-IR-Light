@@ -1,0 +1,84 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuración Básica",
+        "data": {
+          "name": "Nombre de la luz (Obligatorio)",
+          "brightness_levels": "Número de niveles de brillo",
+          "ir_button_on": "Botón Encendido (ON) (Obligatorio)",
+          "ir_button_off": "Botón Apagado (OFF) (Obligatorio)",
+          "ir_button_bright_up": "Botón Subir Brillo (Obligatorio)",
+          "ir_button_bright_down": "Botón Bajar Brillo (Obligatorio)"
+        }
+      },
+      "effects": {
+        "title": "Efectos",
+        "data": {
+          "ir_button_effect_flash": "Botón Efecto Flash (Opcional)",
+          "ir_button_effect_smooth": "Botón Efecto Smooth (Opcional)"
+        }
+      },
+      "colors": {
+        "title": "Mapeo de Colores IR",
+        "description": "Configura tus botones IR. White, Red, Green y Blue son requeridos.\n\nGuía: [Rueda Cromática](https://es.wikipedia.org/wiki/C%C3%ADrculo_crom%C3%A1tico#/media/Archivo:Dodecagrama_crom%C3%A1tico_natural.PNG)",
+        "data": {
+          "color_white": "Blanco (Obligatorio)",
+          "color_red": "Rojo (Obligatorio)",
+          "color_green": "Verde (Obligatorio)",
+          "color_blue": "Azul (Obligatorio)",
+          "color_orange": "Naranja (Opcional)",
+          "color_yellow": "Amarillo (Opcional)",
+          "color_chartreuse": "Lima (Opcional)",
+          "color_spring": "Verde Cian (Opcional)",
+          "color_cyan": "Cian (Opcional)",
+          "color_azure": "Azur (Opcional)",
+          "color_violet": "Violeta (Opcional)",
+          "color_magenta": "Magenta (Opcional)",
+          "color_rose": "Fucsia (Opcional)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configuración Básica",
+        "data": {
+          "name": "Nombre de la luz (Obligatorio)",
+          "brightness_levels": "Número de niveles de brillo",
+          "ir_button_on": "Botón Encendido (ON) (Obligatorio)",
+          "ir_button_off": "Botón Apagado (OFF) (Obligatorio)",
+          "ir_button_bright_up": "Botón Subir Brillo (Obligatorio)",
+          "ir_button_bright_down": "Botón Bajar Brillo (Obligatorio)"
+        }
+      },
+      "effects": {
+        "title": "Efectos",
+        "data": {
+          "ir_button_effect_flash": "Botón Efecto Flash (Opcional)",
+          "ir_button_effect_smooth": "Botón Efecto Smooth (Opcional)"
+        }
+      },
+      "colors": {
+        "title": "Mapeo de Colores IR",
+        "description": "Configura tus botones IR. White, Red, Green y Blue son requeridos.\n\nGuía: [Rueda Cromática](https://es.wikipedia.org/wiki/C%C3%ADrculo_crom%C3%A1tico#/media/Archivo:Dodecagrama_crom%C3%A1tico_natural.PNG)",
+        "data": {
+          "color_white": "Blanco (Obligatorio)",
+          "color_red": "Rojo (Obligatorio)",
+          "color_green": "Verde (Obligatorio)",
+          "color_blue": "Azul (Obligatorio)",
+          "color_orange": "Naranja (Opcional)",
+          "color_yellow": "Amarillo (Opcional)",
+          "color_chartreuse": "Lima (Opcional)",
+          "color_spring": "Verde Cian (Opcional)",
+          "color_cyan": "Cian (Opcional)",
+          "color_azure": "Azur (Opcional)",
+          "color_violet": "Violeta (Opcional)",
+          "color_magenta": "Magenta (Opcional)",
+          "color_rose": "Fucsia (Opcional)"
+        }
+      }
+    }
+  }
+}
