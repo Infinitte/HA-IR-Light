@@ -3,6 +3,5 @@
   "render_readme": true,
   "homeassistant": "2025.12.0",
   "zip_release": true,
-  "filename": "ir_light.zip",
-  "keywords": ["ir", "infrared", "rgb", "light", "remote"]
+  "filename": "ir_light.zip"
 }
