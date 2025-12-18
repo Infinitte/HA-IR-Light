@@ -1,7 +1,10 @@
 """Main component for IR Light"""
+import homeassistant.helpers.config_validation as cv
 
 DOMAIN = "ir_light"
 PLATFORMS = ["light"]
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema("ir_light")
 
 async def async_setup(hass, config):
   """Component configuration"""
