@@ -138,7 +138,7 @@ class IrLight(LightEntity):
       button_id = self._config_data.get("color_white")
       if button_id:
         await self.hass.services.async_call(
-          "button", "press", {"entity_id": button_id}, blocking=False
+          "homeassistant", "turn_on", {"entity_id": button_id}, blocking=False
         )
       return
 
@@ -163,7 +163,7 @@ class IrLight(LightEntity):
     if best_button:
       _LOGGER.debug(f"Closest match for Hue {hue}: {best_button} (dist: {min_distance})")
       await self.hass.services.async_call(
-        "button", "press", {"entity_id": best_button}, blocking=False
+        "homeassistant", "turn_on", {"entity_id": best_button}, blocking=False
       )
 
   async def _async_press_button(self, action_key: str):
@@ -171,7 +171,7 @@ class IrLight(LightEntity):
     entity_id = self.button_map.get(action_key)
     if entity_id:
       await self.hass.services.async_call(
-        "button", "press", {"entity_id": entity_id}, blocking=False
+        "homeassistant", "turn_on", {"entity_id": entity_id}, blocking=False
       )
     else:
       _LOGGER.warning(f"IR button for action '{action_key}' not found in BUTTON_MAP.")

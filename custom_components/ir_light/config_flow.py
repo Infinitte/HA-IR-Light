@@ -18,6 +18,7 @@ class IrLightConfigFlow(config_entries.ConfigFlow, domain="ir_light"):
 
   def __init__(self):
     self._config_data = {}
+    self._entity_filter = {"domain": ["button", "scene", "script"]}
 
   async def async_step_user(self, user_input=None) -> FlowResult:
     """Handles initial config (Main buttons)"""
@@ -30,10 +31,10 @@ class IrLightConfigFlow(config_entries.ConfigFlow, domain="ir_light"):
     fields = {
       vol.Required(CONF_NAME, default="IR Light"): str,
       vol.Required("brightness_levels", default=5): vol.All(vol.Coerce(int), vol.Range(min=2, max=20)),
-      vol.Required("ir_button_on"): selector({"entity": {"filter": {"domain": "button"}}}),
-      vol.Required("ir_button_off"): selector({"entity": {"filter": {"domain": "button"}}}),
-      vol.Required("ir_button_bright_up"): selector({"entity": {"filter": {"domain": "button"}}}),
-      vol.Required("ir_button_bright_down"): selector({"entity": {"filter": {"domain": "button"}}}),
+      vol.Required("ir_button_on"): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Required("ir_button_off"): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Required("ir_button_bright_up"): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Required("ir_button_bright_down"): selector({"entity": {"filter": self._entity_filter}}),
     }
 
     return self.async_show_form(
@@ -52,8 +53,8 @@ class IrLightConfigFlow(config_entries.ConfigFlow, domain="ir_light"):
       return await self.async_step_colors()
 
     effect_fields = {
-      vol.Optional("ir_button_effect_flash"): selector({"entity": {"filter": {"domain": "button"}}}),
-      vol.Optional("ir_button_effect_smooth"): selector({"entity": {"filter": {"domain": "button"}}}),
+      vol.Optional("ir_button_effect_flash"): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Optional("ir_button_effect_smooth"): selector({"entity": {"filter": self._entity_filter}}),
     }
 
     return self.async_show_form(
@@ -81,7 +82,7 @@ class IrLightConfigFlow(config_entries.ConfigFlow, domain="ir_light"):
     color_fields = {}
     for color in all_colors:
       field_id = f"color_{color.lower()}"
-      selector_config = selector({"entity": {"filter": {"domain": "button"}}})
+      selector_config = selector({"entity": {"filter": self._entity_filter}})
       if color in mandatory_colors:
         color_fields[vol.Required(field_id)] = selector_config
       else:
@@ -107,6 +108,7 @@ class IrLightOptionsFlowHandler(config_entries.OptionsFlow):
     super().__init__()
     self._config_entry = config_entry
     self._config_data = dict(config_entry.data)
+    self._entity_filter = {"domain": ["button", "scene", "script"]}
 
   async def async_step_init(self, user_input=None):
     if user_input is not None:
@@ -115,10 +117,10 @@ class IrLightOptionsFlowHandler(config_entries.OptionsFlow):
 
     fields = {
       vol.Required("brightness_levels", default=self._config_data.get("brightness_levels")): vol.All(vol.Coerce(int), vol.Range(min=2, max=20)),
-      vol.Required("ir_button_on", default=self._config_data.get("ir_button_on")): selector({"entity": {"filter": {"domain": "button"}}}),
-      vol.Required("ir_button_off", default=self._config_data.get("ir_button_off")): selector({"entity": {"filter": {"domain": "button"}}}),
-      vol.Required("ir_button_bright_up", default=self._config_data.get("ir_button_bright_up")): selector({"entity": {"filter": {"domain": "button"}}}),
-      vol.Required("ir_button_bright_down", default=self._config_data.get("ir_button_bright_down")): selector({"entity": {"filter": {"domain": "button"}}}),
+      vol.Required("ir_button_on", default=self._config_data.get("ir_button_on")): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Required("ir_button_off", default=self._config_data.get("ir_button_off")): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Required("ir_button_bright_up", default=self._config_data.get("ir_button_bright_up")): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Required("ir_button_bright_down", default=self._config_data.get("ir_button_bright_down")): selector({"entity": {"filter": self._entity_filter}}),
     }
     return self.async_show_form(step_id="init", data_schema=vol.Schema(fields))
 
@@ -133,7 +135,7 @@ class IrLightOptionsFlowHandler(config_entries.OptionsFlow):
 
     effect_fields  = {}
     for effect_key in ["ir_button_effect_flash", "ir_button_effect_smooth"]:
-      effect_fields[vol.Optional(effect_key)] = selector({"entity": {"filter": {"domain": "button"}}})
+      effect_fields[vol.Optional(effect_key)] = selector({"entity": {"filter": self._entity_filter}})
 
     return self.async_show_form(
       step_id="effects",
@@ -177,9 +179,9 @@ class IrLightOptionsFlowHandler(config_entries.OptionsFlow):
     for color in all_colors:
       field_id = f"color_{color.lower()}"
       if color in mandatory:
-        color_fields[vol.Required(field_id)] = selector({"entity": {"filter": {"domain": "button"}}})
+        color_fields[vol.Required(field_id)] = selector({"entity": {"filter": self._entity_filter}})
       else:
-        color_fields[vol.Optional(field_id)] = selector({"entity": {"filter": {"domain": "button"}}})
+        color_fields[vol.Optional(field_id)] = selector({"entity": {"filter": self._entity_filter}})
 
     return self.async_show_form(
       step_id="colors", 
