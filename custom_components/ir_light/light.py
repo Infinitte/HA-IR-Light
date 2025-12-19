@@ -72,11 +72,6 @@ class IrLight(LightEntity):
     self._hs_color = None
     self._color_steps = self._config_data.get("brightness_levels")
 
-    # Supported features
-    #self._supported_features = (
-    #  SUPPORT_BRIGHTNESS | SUPPORT_EFFECT | SUPPORT_COLOR
-    #)
-
     self.button_map = {
       'ON': self._config_data.get('ir_button_on'),
       'OFF': self._config_data.get('ir_button_off'),
@@ -129,7 +124,7 @@ class IrLight(LightEntity):
   def hs_color(self) -> tuple[float, float] | None:
     return self._hs_color
 
-  async def _async_map_color_to_button(self, hue: float, sat: float):
+  async def _async_map_color_to_button(self, hue: float, sat: float) -> None:
     """Color Selector Script"""
 
     button_id = None
@@ -137,9 +132,10 @@ class IrLight(LightEntity):
     if sat < 10:
       button_id = self._config_data.get("color_white")
       if button_id:
-        await self.hass.services.async_call(
-          "homeassistant", "turn_on", {"entity_id": button_id}, blocking=False
-        )
+        await self._async_press_button(button_id)
+        #await self.hass.services.async_call(
+        #  "homeassistant", "turn_on", {"entity_id": button_id}, blocking=False
+        #)
       return
 
     available_buttons = {}
@@ -162,19 +158,45 @@ class IrLight(LightEntity):
 
     if best_button:
       _LOGGER.debug(f"Closest match for Hue {hue}: {best_button} (dist: {min_distance})")
-      await self.hass.services.async_call(
-        "homeassistant", "turn_on", {"entity_id": best_button}, blocking=False
-      )
+      await self._async_press_button(best_button)
+      #await self.hass.services.async_call(
+      #  "homeassistant", "turn_on", {"entity_id": best_button}, blocking=False
+      #)
 
-  async def _async_press_button(self, action_key: str):
+  async def _async_press_button(self, entity_id: str) -> None:
     """Helper to press the corresponding IR button."""
-    entity_id = self.button_map.get(action_key)
-    if entity_id:
-      await self.hass.services.async_call(
-        "homeassistant", "turn_on", {"entity_id": entity_id}, blocking=False
-      )
+
+    if not entity_id or not isinstance(entity_id, str):
+      _LOGGER.warning(f"Entity_id not found for action.")
+      return
+
+    domain = entity_id.split(".")[0]
+
+    if domain == "button":
+      service_domain = "button"
+      service_name = "press"
+    elif domain in ["scene", "script"]:
+      service_domain = domain
+      service_name = "turn_on"
     else:
-      _LOGGER.warning(f"IR button for action '{action_key}' not found in BUTTON_MAP.")
+      # Future prof
+      service_domain = "homeassistant"
+      service_name = "turn_on"
+    
+    await self.hass.services.async_call(
+      service_domain,
+      service_name,
+      {"entity_id": entity_id},
+      blocking=False
+    )
+
+    #entity_id = self.button_map.get(action_key)
+    #if entity_id:
+    #  await self.hass.services.async_call(
+    #    "homeassistant", "turn_on", {"entity_id": entity_id}, blocking=False
+    #  )
+    #else:
+    #  _LOGGER.warning(f"IR button for action '{action_key}' not found in BUTTON_MAP.")
 
   async def async_turn_on(self, **kwargs) -> None:
     """Turn on light. Manages brightness, color and effect"""
@@ -185,7 +207,7 @@ class IrLight(LightEntity):
       hue, sat = self._hs_color
 
       if not self._state or not kwargs:
-        await self._async_press_button('ON')
+        await self._async_press_button(self.button_map.get('ON'))
         self._state = True
         await asyncio.sleep(0.5)
 
@@ -197,11 +219,11 @@ class IrLight(LightEntity):
       self._effect = effect
 
       if not self._state or not kwargs:
-        await self._async_press_button('ON')
+        await self._async_press_button(self.button_map.get('ON'))
         self._state = True
         await asyncio.sleep(0.5)
 
-      await self._async_press_button(f"EFFECT_{effect.upper()}")
+      await self._async_press_button(self.button_map.get(f"EFFECT_{effect.upper()}"))
 
     # --- 3. Brightness Management (set_level) ---
     if ATTR_BRIGHTNESS in kwargs:
@@ -213,14 +235,14 @@ class IrLight(LightEntity):
 
       # Replicar la lógica de pulsos de brillo (arriba/abajo)
       if target_ir_level == 0:
-        await self._async_press_button('OFF')
+        await self._async_press_button(self.button_map.get('OFF'))
         self._state = False
         self._effect = None # Clean effect
         self.async_write_ha_state()
         return
       else:
         if not self._state or not kwargs:
-          await self._async_press_button('ON')
+          await self._async_press_button(self.button_map.get('ON'))
           self._state = True
           await asyncio.sleep(0.5)
 
@@ -231,7 +253,7 @@ class IrLight(LightEntity):
 
           # Executes brigthness change N times
           for _ in range(abs(diff)):
-            await self._async_press_button(action_key)
+            await self._async_press_button(self.button_map.get(action_key))
             # Delay
             await asyncio.sleep(0.5)
 
@@ -241,14 +263,14 @@ class IrLight(LightEntity):
     # --- 4. General switch (turn_on) ---
     # If nothing has change before or have changed but it was not ON
     if not self._state or not kwargs:
-      await self._async_press_button('ON')
+      await self._async_press_button(self.button_map.get('ON'))
       self._state = True
 
     self.async_write_ha_state()
 
   async def async_turn_off(self, **kwargs) -> None:
     """Turn off light"""
-    await self._async_press_button('OFF')
+    await self._async_press_button(self.button_map.get('OFF'))
     self._state = False
     self._effect = None # Clean effect
 
