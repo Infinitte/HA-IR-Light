@@ -81,11 +81,15 @@ class IrLight(LightEntity):
       'BRIGHT_DOWN': self._config_data.get('ir_button_bright_down'),
     }
 
-    self._effect_list = []
-    if self.button_map.get('EFFECT_FLASH'):
-      self._effect_list.append("Flash")
-    if self.button_map.get('EFFECT_SMOOTH'):
-      self._effect_list.append("Smooth")
+    #self._effect_list = []
+    #if self.button_map.get('EFFECT_FLASH'):
+    #  self._effect_list.append("Flash")
+    #if self.button_map.get('EFFECT_SMOOTH'):
+    #  self._effect_list.append("Smooth")
+
+    self._attr_supported_features = LightEntityFeature(0)
+    if any(config_data.get(f"ir_button_effect_{e}") for e in ["flash", "smooth"]):
+      self._attr_supported_features |= LightEntityFeature.EFFECT
 
   @property
   def name(self) -> str:
@@ -104,13 +108,13 @@ class IrLight(LightEntity):
     """Returns brightness (0-255)"""
     return self._brightness
 
-  @property
-  def supported_features(self) -> int:
-    features = SUPPORT_BRIGHTNESS | SUPPORT_COLOR
-    if self._effect_list:
-      features |= SUPPORT_EFFECT
-      self._attr_supported_features = LightEntityFeature.EFFECT
-    return features
+  #@property
+  #def supported_features(self) -> int:
+  #  features = SUPPORT_BRIGHTNESS | SUPPORT_COLOR
+  #  if self._effect_list:
+  #    features |= SUPPORT_EFFECT
+  #    self._attr_supported_features = LightEntityFeature.EFFECT
+  #  return features
 
   @property
   def effect_list(self) -> list[str] | None:
@@ -133,9 +137,6 @@ class IrLight(LightEntity):
       button_id = self._config_data.get("color_white")
       if button_id:
         await self._async_press_button(button_id)
-        #await self.hass.services.async_call(
-        #  "homeassistant", "turn_on", {"entity_id": button_id}, blocking=False
-        #)
       return
 
     available_buttons = {}
@@ -159,9 +160,6 @@ class IrLight(LightEntity):
     if best_button:
       _LOGGER.debug(f"Closest match for Hue {hue}: {best_button} (dist: {min_distance})")
       await self._async_press_button(best_button)
-      #await self.hass.services.async_call(
-      #  "homeassistant", "turn_on", {"entity_id": best_button}, blocking=False
-      #)
 
   async def _async_press_button(self, entity_id: str) -> None:
     """Helper to press the corresponding IR button."""
@@ -189,14 +187,6 @@ class IrLight(LightEntity):
       {"entity_id": entity_id},
       blocking=False
     )
-
-    #entity_id = self.button_map.get(action_key)
-    #if entity_id:
-    #  await self.hass.services.async_call(
-    #    "homeassistant", "turn_on", {"entity_id": entity_id}, blocking=False
-    #  )
-    #else:
-    #  _LOGGER.warning(f"IR button for action '{action_key}' not found in BUTTON_MAP.")
 
   async def async_turn_on(self, **kwargs) -> None:
     """Turn on light. Manages brightness, color and effect"""
