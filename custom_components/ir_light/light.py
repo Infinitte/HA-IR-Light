@@ -81,11 +81,11 @@ class IrLight(LightEntity):
       'BRIGHT_DOWN': self._config_data.get('ir_button_bright_down'),
     }
 
-    #self._effect_list = []
-    #if self.button_map.get('EFFECT_FLASH'):
-    #  self._effect_list.append("Flash")
-    #if self.button_map.get('EFFECT_SMOOTH'):
-    #  self._effect_list.append("Smooth")
+    self._effect_list = []
+    if self.button_map.get('EFFECT_FLASH'):
+      self._effect_list.append("Flash")
+    if self.button_map.get('EFFECT_SMOOTH'):
+      self._effect_list.append("Smooth")
 
     self._attr_supported_features = LightEntityFeature(0)
     if any(config_data.get(f"ir_button_effect_{e}") for e in ["flash", "smooth"]):
