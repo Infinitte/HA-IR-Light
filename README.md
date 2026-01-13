@@ -9,6 +9,8 @@
 
 This integration allows you to control "dumb" RGB LED lights (controlled via Infrared remotes) as if they were native smart lights in Home Assistant. It maps the **HS (Hue & Saturation) color wheel** and **Brightness** levels to specific IR button presses.
 
+This was inspired by this video https://www.youtube.com/watch?v=yvfctsO6A8k.
+
 ## ✨ Features
 * **Native Color Wheel:** Select any color; the integration automatically calculates and presses the closest configured IR button using circular angular distance.
 * **Proximity Mapping:** If you only have 4 buttons (Red, Green, Blue, White), selecting "Orange" on the UI will automatically trigger the "Red" IR command.
