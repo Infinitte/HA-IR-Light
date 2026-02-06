@@ -92,7 +92,8 @@ class IrLightConfigFlow(config_entries.ConfigFlow, domain="ir_light"):
       step_id="colors",
       data_schema=vol.Schema(color_fields),
       description_placeholders={
-        "Guide": "Use color wheel"
+        "Guide": "Use color wheel",
+        "color_wheel_url": "https://en.wikipedia.org/wiki/Color_wheel#/media/File:RGB_color_wheel_with_hue_and_hex.svg"
       },
       errors=errors
     )

@@ -21,7 +21,7 @@
       },
       "colors": {
         "title": "IR Color Mapping",
-        "description": "Configure your IR buttons. White, Red, Green, and Blue are required.\n\nGuide: [Color Wheel](https://en.wikipedia.org/wiki/Color_wheel#/media/File:RGB_color_wheel_with_hue_and_hex.svg)",
+        "description": "Configure your IR buttons. White, Red, Green, and Blue are required.\n\nGuide: [Color Wheel]({color_wheel_url})",
         "data": {
           "color_white": "White (Required)",
           "color_red": "Red (Required)",
@@ -62,7 +62,7 @@
       },
       "colors": {
         "title": "IR Color Mapping",
-        "description": "Configure your IR buttons. White, Red, Green, and Blue are required.\n\nGuide: [Color Wheel](https://en.wikipedia.org/wiki/Color_wheel#/media/File:RGB_color_wheel_with_hue_and_hex.svg)",
+        "description": "Configure your IR buttons. White, Red, Green, and Blue are required.\n\nGuide: [Color Wheel]({color_wheel_url})",
         "data": {
           "color_white": "White (Required)",
           "color_red": "Red (Required)",
