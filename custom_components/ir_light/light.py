@@ -51,16 +51,30 @@ async def async_setup_entry(
   async_add_entities([IrLight(hass, name, data)], True)
 
 
+CT_EFFECTS = [
+  ("ct_button_warm", "Warm White"),
+  ("ct_button_natural", "Natural White"),
+  ("ct_button_cool", "Cool White"),
+]
+
+
 class IrLight(LightEntity):
   """IR Light class"""
-  _attr_color_mode = ColorMode.HS
-  _attr_supported_color_modes = {ColorMode.HS}
 
   def __init__(self, hass: HomeAssistant, name: str, config_data: dict):
     """Constructor"""
     self.hass = hass
     self._name = name
     self._config_data = config_data
+
+    self._is_color_temp_mode = config_data.get("light_mode") == "color_temperature"
+
+    if self._is_color_temp_mode:
+      self._attr_color_mode = ColorMode.BRIGHTNESS
+      self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
+    else:
+      self._attr_color_mode = ColorMode.HS
+      self._attr_supported_color_modes = {ColorMode.HS}
 
     # --- Persistent states ---
     self._state = False
@@ -79,13 +93,20 @@ class IrLight(LightEntity):
     }
 
     self._effect_list = []
-    if self.button_map.get('EFFECT_FLASH'):
-      self._effect_list.append("Flash")
-    if self.button_map.get('EFFECT_SMOOTH'):
-      self._effect_list.append("Smooth")
+
+    if self._is_color_temp_mode:
+      for btn_key, effect_name in CT_EFFECTS:
+        if config_data.get(btn_key):
+          self._effect_list.append(effect_name)
+          self.button_map[f"EFFECT_{effect_name.upper()}"] = config_data.get(btn_key)
+    else:
+      if self.button_map.get('EFFECT_FLASH'):
+        self._effect_list.append("Flash")
+      if self.button_map.get('EFFECT_SMOOTH'):
+        self._effect_list.append("Smooth")
 
     self._attr_supported_features = LightEntityFeature(0)
-    if any(config_data.get(f"ir_button_effect_{e}") for e in ["flash", "smooth"]):
+    if self._effect_list:
       self._attr_supported_features |= LightEntityFeature.EFFECT
 
   @property
@@ -188,7 +209,7 @@ class IrLight(LightEntity):
   async def async_turn_on(self, **kwargs) -> None:
     """Turn on light. Manages brightness, color and effect"""
 
-    # --- 1. Color Management (set_hs) ---
+    # --- 1. HS Color Management (rgb mode) ---
     if ATTR_HS_COLOR in kwargs:
       self._hs_color = kwargs[ATTR_HS_COLOR]
       hue, sat = self._hs_color
@@ -200,7 +221,7 @@ class IrLight(LightEntity):
 
       await self._async_map_color_to_button(hue, sat)
 
-    # --- 2. Effect  Management (set_effect) ---
+    # --- 2. Effect Management (set_effect) ---
     if ATTR_EFFECT in kwargs:
       effect = kwargs[ATTR_EFFECT]
       self._effect = effect

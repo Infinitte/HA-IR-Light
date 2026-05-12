@@ -30,6 +30,9 @@ class IrLightConfigFlow(config_entries.ConfigFlow, domain="ir_light"):
 
     fields = {
       vol.Required(CONF_NAME, default="IR Light"): str,
+      vol.Required("light_mode", default="rgb"): selector({
+        "select": {"options": ["rgb", "color_temperature"], "mode": "list"}
+      }),
       vol.Required("brightness_levels", default=5): vol.All(vol.Coerce(int), vol.Range(min=2, max=20)),
       vol.Required("ir_button_on"): selector({"entity": {"filter": self._entity_filter}}),
       vol.Required("ir_button_off"): selector({"entity": {"filter": self._entity_filter}}),
@@ -49,7 +52,8 @@ class IrLightConfigFlow(config_entries.ConfigFlow, domain="ir_light"):
 
     if user_input is not None:
       self._config_data.update(user_input)
-      title = self._config_data[CONF_NAME]
+      if self._config_data.get("light_mode") == "color_temperature":
+        return await self.async_step_color_temp()
       return await self.async_step_colors()
 
     effect_fields = {
@@ -61,6 +65,24 @@ class IrLightConfigFlow(config_entries.ConfigFlow, domain="ir_light"):
       step_id="effects",
       data_schema=vol.Schema(effect_fields),
       errors=errors
+    )
+
+  async def async_step_color_temp(self, user_input=None) -> FlowResult:
+    """Step 3 (color_temperature mode): Map warm/natural/cool white IR buttons."""
+    if user_input is not None:
+      self._config_data.update(user_input)
+      title = self._config_data[CONF_NAME]
+      return self.async_create_entry(title=title, data=self._config_data)
+
+    fields = {
+      vol.Optional("ct_button_warm"): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Optional("ct_button_natural"): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Optional("ct_button_cool"): selector({"entity": {"filter": self._entity_filter}}),
+    }
+
+    return self.async_show_form(
+      step_id="color_temp",
+      data_schema=vol.Schema(fields),
     )
 
   async def async_step_colors(self, user_input=None) -> FlowResult:
@@ -117,6 +139,9 @@ class IrLightOptionsFlowHandler(config_entries.OptionsFlow):
       return await self.async_step_effects()
 
     fields = {
+      vol.Required("light_mode", default=self._config_data.get("light_mode", "rgb")): selector({
+        "select": {"options": ["rgb", "color_temperature"], "mode": "list"}
+      }),
       vol.Required("brightness_levels", default=self._config_data.get("brightness_levels")): vol.All(vol.Coerce(int), vol.Range(min=2, max=20)),
       vol.Required("ir_button_on", default=self._config_data.get("ir_button_on")): selector({"entity": {"filter": self._entity_filter}}),
       vol.Required("ir_button_off", default=self._config_data.get("ir_button_off")): selector({"entity": {"filter": self._entity_filter}}),
@@ -132,6 +157,8 @@ class IrLightOptionsFlowHandler(config_entries.OptionsFlow):
         if key not in user_input or user_input[key] in [None, "", "None"]:
           self._config_data.pop(key, None)
 
+      if self._config_data.get("light_mode") == "color_temperature":
+        return await self.async_step_color_temp()
       return await self.async_step_colors()
 
     effect_fields  = {}
@@ -142,6 +169,33 @@ class IrLightOptionsFlowHandler(config_entries.OptionsFlow):
       step_id="effects",
       data_schema=self.add_suggested_values_to_schema(
         vol.Schema(effect_fields),
+        self._config_data
+      )
+    )
+
+  async def async_step_color_temp(self, user_input=None):
+    if user_input is not None:
+      self._config_data.update(user_input)
+
+      for key in ["ct_button_warm", "ct_button_natural", "ct_button_cool"]:
+        if key not in user_input or user_input[key] in [None, "", "None"]:
+          self._config_data.pop(key, None)
+
+      self.hass.config_entries.async_update_entry(
+        self._config_entry, data=self._config_data
+      )
+      return self.async_create_entry(title="", data={})
+
+    fields = {
+      vol.Optional("ct_button_warm"): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Optional("ct_button_natural"): selector({"entity": {"filter": self._entity_filter}}),
+      vol.Optional("ct_button_cool"): selector({"entity": {"filter": self._entity_filter}}),
+    }
+
+    return self.async_show_form(
+      step_id="color_temp",
+      data_schema=self.add_suggested_values_to_schema(
+        vol.Schema(fields),
         self._config_data
       )
     )
