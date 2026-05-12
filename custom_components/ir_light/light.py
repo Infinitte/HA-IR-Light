@@ -4,7 +4,6 @@ import voluptuous as vol
 import asyncio # for delay
 from homeassistant.components.light import (
   ATTR_BRIGHTNESS,
-  ATTR_COLOR_TEMP_KELVIN,
   ATTR_EFFECT,
   ATTR_HS_COLOR,
   ColorMode,
@@ -52,11 +51,11 @@ async def async_setup_entry(
   async_add_entities([IrLight(hass, name, data)], True)
 
 
-COLOR_TEMP_CENTERS = {
-  "ct_button_warm": 2700,
-  "ct_button_natural": 4000,
-  "ct_button_cool": 6500,
-}
+CT_EFFECTS = [
+  ("ct_button_warm", "Warm White"),
+  ("ct_button_natural", "Natural White"),
+  ("ct_button_cool", "Cool White"),
+]
 
 
 class IrLight(LightEntity):
@@ -71,10 +70,8 @@ class IrLight(LightEntity):
     self._is_color_temp_mode = config_data.get("light_mode") == "color_temperature"
 
     if self._is_color_temp_mode:
-      self._attr_color_mode = ColorMode.COLOR_TEMP
-      self._attr_supported_color_modes = {ColorMode.COLOR_TEMP}
-      self._attr_min_color_temp_kelvin = 2700
-      self._attr_max_color_temp_kelvin = 6500
+      self._attr_color_mode = ColorMode.BRIGHTNESS
+      self._attr_supported_color_modes = {ColorMode.BRIGHTNESS}
     else:
       self._attr_color_mode = ColorMode.HS
       self._attr_supported_color_modes = {ColorMode.HS}
@@ -84,7 +81,6 @@ class IrLight(LightEntity):
     self._brightness = 255
     self._effect = None
     self._hs_color = None
-    self._color_temp_kelvin: int | None = None
     self._color_steps = self._config_data.get("brightness_levels")
 
     self.button_map = {
@@ -97,13 +93,20 @@ class IrLight(LightEntity):
     }
 
     self._effect_list = []
-    if self.button_map.get('EFFECT_FLASH'):
-      self._effect_list.append("Flash")
-    if self.button_map.get('EFFECT_SMOOTH'):
-      self._effect_list.append("Smooth")
+
+    if self._is_color_temp_mode:
+      for btn_key, effect_name in CT_EFFECTS:
+        if config_data.get(btn_key):
+          self._effect_list.append(effect_name)
+          self.button_map[f"EFFECT_{effect_name.upper()}"] = config_data.get(btn_key)
+    else:
+      if self.button_map.get('EFFECT_FLASH'):
+        self._effect_list.append("Flash")
+      if self.button_map.get('EFFECT_SMOOTH'):
+        self._effect_list.append("Smooth")
 
     self._attr_supported_features = LightEntityFeature(0)
-    if any(config_data.get(f"ir_button_effect_{e}") for e in ["flash", "smooth"]):
+    if self._effect_list:
       self._attr_supported_features |= LightEntityFeature.EFFECT
 
   @property
@@ -142,24 +145,6 @@ class IrLight(LightEntity):
   @property
   def hs_color(self) -> tuple[float, float] | None:
     return self._hs_color
-
-  @property
-  def color_temp_kelvin(self) -> int | None:
-    return self._color_temp_kelvin
-
-  async def _async_map_color_temp_to_button(self, kelvin: int) -> None:
-    """Maps a color temperature in Kelvin to the closest configured IR button."""
-    available = {
-      key: center for key, center in COLOR_TEMP_CENTERS.items()
-      if self._config_data.get(key)
-    }
-    if not available:
-      return
-
-    best_key = min(available, key=lambda k: abs(available[k] - kelvin))
-    button_id = self._config_data.get(best_key)
-    _LOGGER.debug(f"Color temp {kelvin}K → {best_key} ({available[best_key]}K)")
-    await self._async_press_button(button_id)
 
   async def _async_map_color_to_button(self, hue: float, sat: float) -> None:
     """Color Selector Script"""
@@ -224,18 +209,7 @@ class IrLight(LightEntity):
   async def async_turn_on(self, **kwargs) -> None:
     """Turn on light. Manages brightness, color and effect"""
 
-    # --- 1. Color Temperature Management (color_temp mode only) ---
-    if ATTR_COLOR_TEMP_KELVIN in kwargs and self._is_color_temp_mode:
-      self._color_temp_kelvin = kwargs[ATTR_COLOR_TEMP_KELVIN]
-
-      if not self._state:
-        await self._async_press_button(self.button_map.get('ON'))
-        self._state = True
-        await asyncio.sleep(0.5)
-
-      await self._async_map_color_temp_to_button(self._color_temp_kelvin)
-
-    # --- 2. HS Color Management (rgb mode) ---
+    # --- 1. HS Color Management (rgb mode) ---
     if ATTR_HS_COLOR in kwargs:
       self._hs_color = kwargs[ATTR_HS_COLOR]
       hue, sat = self._hs_color
@@ -247,7 +221,7 @@ class IrLight(LightEntity):
 
       await self._async_map_color_to_button(hue, sat)
 
-    # --- 3. Effect Management (set_effect) ---
+    # --- 2. Effect Management (set_effect) ---
     if ATTR_EFFECT in kwargs:
       effect = kwargs[ATTR_EFFECT]
       self._effect = effect
@@ -259,7 +233,7 @@ class IrLight(LightEntity):
 
       await self._async_press_button(self.button_map.get(f"EFFECT_{effect.upper()}"))
 
-    # --- 4. Brightness Management (set_level) ---
+    # --- 3. Brightness Management (set_level) ---
     if ATTR_BRIGHTNESS in kwargs:
       requested_brightness = kwargs[ATTR_BRIGHTNESS]
 
@@ -294,7 +268,7 @@ class IrLight(LightEntity):
         # Save new brightness (HA range)
         self._brightness = requested_brightness
 
-    # --- 5. General switch (turn_on) ---
+    # --- 4. General switch (turn_on) ---
     # If nothing has change before or have changed but it was not ON
     if not self._state or not kwargs:
       await self._async_press_button(self.button_map.get('ON'))
